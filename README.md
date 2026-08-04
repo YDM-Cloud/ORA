@@ -1,61 +1,98 @@
-#  energy scheduling
+# ORA Energy Scheduling
 
-Reproducible code for carbon-aware AI data-center energy scheduling.
+Reproducible research code for the manuscript *Beyond Scalar Optimization: A Feasibility-Audited Framework for Reliability Assessment of Energy-Carbon Scheduling in Intelligent Computing Infrastructures*.
 
-## Layout
+The repository implements the ORA archive-resonance scheduling engine, five comparison approaches (DE, PSO, GTO, MGO, and MPC), an SLSQP continuous-optimization reference, and the independent feasibility-auditing and repair workflow used in the paper.
 
-- `configs/`: experiment settings and paths
-- `data/`: immutable inputs and generated processed data
-- `src/`: algorithms, benchmark code, data processing, evaluation
-- `experiments/`: executable experiment entry points
-- `scripts/`: paper figure and table reproduction
-- `results/`: raw, processed, and figure outputs
+## Repository layout
 
-## Setup
+- `configs/`: experiment settings and data/result paths.
+- `data/raw/`: source traces used by the preprocessing pipeline.
+- `data/processed/`: generated profiles and six scheduling scenarios.
+- `src/algorithms/`: ORA and comparison algorithms.
+- `src/data_processing/`: preprocessing, feature engineering, and scenario construction.
+- `src/optimization/`: normalized energy-carbon scheduling objective.
+- `src/evaluation/`: statistics and post-processing utilities.
+- `experiments/`: executable experiment entry points.
+- `scripts/`: paper figure and table reproduction.
+- `results/`: experiment outputs and submission-ready figure/table data.
+
+## Installation
+
+Python 3.10 is recommended.
+
+Using Conda:
 
 ```powershell
 conda env create -f environment.yml
 conda activate ora-energy
 ```
 
-## Checks
+Using pip:
 
 ```powershell
-python -m unittest discover -s tests
-python -m compileall -q src experiments scripts data/raw/llama3
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
 ```
 
-## Run
+## Configuration
 
-Energy experiments, from the project root:
+The main configuration is `configs/energy_case.yaml`. It defines data paths, the six operating scenarios, objective weights, algorithm lists, formal run counts, population sizes, iteration budgets, and evaluation settings. `configs/default.yaml` contains the base objective and SLA penalty settings.
+
+Some experiments can take a long time to complete. To verify that the code runs correctly, reduce parameters such as `runs`, `max_days`, `population`, and `max_iterations` in a local copy of the configuration. Use the published settings for full reproduction.
+
+## Reproduce the study
+
+Run commands from the repository root.
+
+Prepare processed data and baseline schedules:
 
 ```powershell
-python -m experiments.run_feature_engineering
 python -m experiments.generate_baseline_results
+```
+
+Run the main comparison and reliability checks:
+
+```powershell
 python -m experiments.run_energy_case
-python -m experiments.run_reliability_case
+python -m experiments.run_feasibility_audit
+python -m experiments.run_repair_test
+python -m experiments.run_slsqp_baseline
 ```
 
-Processed datasets are written to `data/processed`. Main and reliability
-experiment results are written to `results/energy_case` and
-`results/reliability`.
-
-Post-processing:
+Run sensitivity, ablation, scalability, and robustness experiments:
 
 ```powershell
-python -m experiments.generate_baseline_results
-python -m src.evaluation.metrics
-python -m src.evaluation.statistics
-python -m src.evaluation.calculate_reduction
-python -m src.evaluation.pareto_analysis
-python -m scripts.reproduce_figures
-python -m scripts.reproduce_tables
+python -m experiments.run_penalty_sensitivity
+python -m experiments.run_weight_sensitivity
+python -m experiments.run_ora_ablation
+python -m experiments.run_ora_scalability
+python -m experiments.run_ora_multinode_scalability
+python -m experiments.run_stress_test
+python -m experiments.run_uncertainty_test
 ```
 
-CEC benchmark:
+Regenerate paper figures and tables from the result files:
 
 ```powershell
-python -m experiments.run_cec2026
+python -m experiments.run_plots
 ```
 
-CEC2026 results are written to `results/cec2026`.
+Generated outputs are written beneath `results/`; paper-ready assets are collected under `results/paper/`.
+
+## Quick validation
+
+```powershell
+python -m compileall -q src experiments scripts
+python -c "from src.algorithms.ORA import ORA; from src.optimization.objective import EnergySchedulingObjective; print('ORA imports OK')"
+```
+
+## Data and reproducibility
+
+The raw and processed data under `data/` and the generated outputs under `results/` are too large to distribute with this repository. Contact the corresponding author to request these files. Third-party traces remain subject to their original providers' terms; cite the corresponding datasets and sources when reusing them.
+
+## License
+
+The source code is released under the MIT License. See `LICENSE`.
