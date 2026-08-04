@@ -1,0 +1,9 @@
+dependencies:
+  - python=3.10
+  - matplotlib
+  - numpy
+  - openpyxl
+  - pandas
+  - pyarrow
+  - scipy
+  - tqdm
