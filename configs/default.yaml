@@ -1,0 +1,15 @@
+{
+  "objective": {
+    "weights": {
+      "energy": 0.25,
+      "carbon": 0.25,
+      "cost": 0.15,
+      "sla": 0.30,
+      "peak": 0.05,
+      "pue": 0.05
+    }
+  },
+  "sla": {
+    "hard_penalty": 10.0
+  }
+}
