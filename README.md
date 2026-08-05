@@ -89,9 +89,15 @@ python -m compileall -q src experiments scripts
 python -c "from src.algorithms.ORA import ORA; from src.optimization.objective import EnergySchedulingObjective; print('ORA imports OK')"
 ```
 
-## Data and reproducibility
+## Data and Code Availability
 
-The raw and processed data under `data/` and the generated outputs under `results/` are too large to distribute with this repository. Contact the corresponding author to request these files. Third-party traces remain subject to their original providers' terms; cite the corresponding datasets and sources when reusing them.
+The source code for the proposed ORA framework, baseline scheduling approaches (including DE, PSO, GTO, MGO, MPC, and SLSQP), experimental configurations, and manuscript-generation scripts are publicly available at: https://github.com/YDM-Cloud/ORA.
+
+The raw datasets and processed experimental data required to reproduce the reported experiments are archived in Zenodo: https://doi.org/10.5281/zenodo.21799937.
+
+The Zenodo repository contains the raw and processed data under `data/`, the generated experimental outputs under `results/`, and the corresponding files required to reproduce the reported scheduling performance evaluation, feasibility auditing analysis, repair-based verification, scalability assessment, and statistical validation.
+
+Third-party traces included in the dataset remain subject to their original providers' terms of use. Users should cite the corresponding datasets and original sources when reusing these data.
 
 ## License
 
